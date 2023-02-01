@@ -1,0 +1,50 @@
+version: "3.6"
+services:
+  api:
+    depends_on:
+      - db
+      - redis
+    build: .
+    ports:
+      - 3008:3008
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/postgres?schema=public
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      FIREBASE_API_KEY: AIzaSyBPognI3dDU_O9KSyFYuYorIHZFiF_kCEM
+      AUTH_DOMAIN: fir-poc-task-ccb18.firebaseapp.com
+      PROJECT_ID: fir-poc-task-ccb18
+      STORAGE_BUCKET: fir-poc-task-ccb18.appspot.com
+      MESSAGING_SENDER_ID: 117176430191
+      APP_ID: 1:117176430191:web:8712f9aa294f0f4f93679a
+      API_KEY: sup3r-s3cr3t-@p1-k3y
+      GOOGLE_APPLICATION_CREDENTIALS: ./fir-poc-task-ccb18-172b0fd22450.json
+      PORT: 3008
+    volumes:
+      - ./src:/user/src/app/src
+      - ./test:/user/src/app/test
+      - ./prisma:/user/src/app/prisma
+  db:
+    image: postgres
+    container_name: local_pgdb
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - local_pgdata:/var/lib/postgresql/data
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - redis:/data
+
+volumes:
+  local_pgdata:
+  redis:
+    driver: local

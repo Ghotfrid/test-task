@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Topic {
+  id   String @id @default(uuid())
+  name String @unique
+
+  Subscribers Device[] @relation("DevicesOnTopic")
+}
+
+model Device {
+  id    String @id @default(uuid())
+  token String @unique
+
+  Topics Topic[] @relation("DevicesOnTopic")
+}
